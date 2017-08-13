@@ -1,0 +1,10 @@
+{
+    "DataBase": {
+        "host": "172.16.24.249",
+        "port": 1521,
+        "dbn": "GXZY",
+        "user": "gxzy_user",
+        "pass": "gxzy_user_2291862"
+    },
+    "NLS_LANG": "SIMPLIFIED CHINESE_CHINA.UTF8"
+}
