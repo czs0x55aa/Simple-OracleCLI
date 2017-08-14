@@ -6,6 +6,9 @@ class exitAgent(baseAgent):
         super(exitAgent, self).__init__()
         self.db = db
 
+    def parse(self, arg_list):
+        return {}
+
     def run(self):
-        print 'Exit.'
+        print ('Exit.')
         exit()

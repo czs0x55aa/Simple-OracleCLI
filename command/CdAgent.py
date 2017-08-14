@@ -7,15 +7,20 @@ class cdAgent(baseAgent):
         self.db = db
         self.table = None
 
-    def run(self, t=None):
-        if t is not None:
-            try:
-                query_res = self.db.execute_sql('select count(*) from "%s"' % (t))
-                if query_res is not None:
-                    print query_res
-                # print 'table %s rows: %d.' % (table_name, res[0][0])
-                self.table = t
-            except Exception, ex:
-                print Exception, ex
-        else:
-            self.log('table name required.', log_type='warning')
+        self.parser.add_argument('table', type=str, help="cd target table name.")
+
+    def parse(self, cmd_spl):
+        try:
+            args, unknown = self.parser.parse_known_args(cmd_spl)
+            return vars(args)
+        except Exception, ex:
+            self.log_error(ex)
+
+    def run(self, table):
+        try:
+            query_res = self.db.execute_sql('select count(*) from "%s"' % (table))
+            # print 'table %s rows: %d.' % (table_name, res[0][0])
+            self.dump_table([['Table', 'Rows'], [table, query_res[0][0]]])
+            self.table = table
+        except Exception, ex:
+            self.log_error(ex)

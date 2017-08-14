@@ -6,22 +6,20 @@ from OracleUtils import DBInstance
 
 command_path = './command'
 
-class Parser(object):
+
+class CLIController(object):
     def __init__(self):
-        self.cmdManager = CMDManager()
+        self.controller = CMDPacket()
 
     def resolve(self, cmd):
-        def operate(args):
-            pass
         cmd_spl = cmd.split()
         if len(cmd_spl) == 0:
-            return {}, ''
-        cmd_head = cmd_spl[0]
-        operate_func = self.cmdManager.getOperat(cmd_head)
-        if cmd_head == 'exit':
-            operate_func()
-        elif cmd_head == 'cd' and len(cmd_spl) >= 2:
-            operate_func(t=cmd_spl[1])
+            return
+        cmd_name = cmd_spl[0]
+        if self.controller.hasCMD(cmd_name):
+            self.controller.execute(cmd_spl)
+        else:
+            print ('Command not exist.')
 
 def singleton(cls):
     instances = {}
@@ -33,7 +31,7 @@ def singleton(cls):
     return getinstance
 
 @singleton
-class CMDManager(object):
+class CMDPacket(object):
     __db = None
     __cmds = None
 
@@ -46,9 +44,21 @@ class CMDManager(object):
             return self.__cmds[cmd_name].run
         return None
 
+    def hasCMD(self, cmd_name):
+        if cmd_name in self.__cmds.keys():
+            return True
+        return False
+
+    def execute(self, cmd_spl):
+        """ execute command """
+        cmd_name = cmd_spl[0]
+        # parse command format
+        args_dict = self.__cmds[cmd_name].parse(cmd_spl[1:])
+        if args_dict is not None:
+            self.__cmds[cmd_name].run(**args_dict)
+
     def __loadObjects(self, path, db):
         sys.path.append(path)
-
         modules = []
         # search and import module in directory
         for root, dirs, files in os.walk(path):
@@ -61,13 +71,31 @@ class CMDManager(object):
         for modl in modules:
             for attr in dir(modl):
                 item = getattr(modl, attr)
-                # print part, type(item)
-                if type(item) == type(object):
+                # store object named xxxAgent
+                if type(item) == type(object) and item.__name__.find('Agent') > 0:
                     clas.add(item)
         # load objects
         objs = {}
         for C in clas:
-            instant = C(db)
-            if instant.cmd_name != 'base':
+            # print C.__name__
+            instant = C(self.__db)
+            if hasattr(instant, 'cmd_name') and instant.cmd_name != 'base':
+                # print 'load command %s.' % instant.cmd_name
                 objs[instant.cmd_name] = instant
         return objs
+
+# import argparse
+# def testArg(astr):
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('-t')
+#     parser.add_argument('-b')
+#
+#     arg, unknown = parser.parse_known_args(astr.split())
+#     print arg.t
+#     print arg.b
+#
+#
+#
+# while True:
+#     astr = raw_input('> ')
+#     testArg(astr)
