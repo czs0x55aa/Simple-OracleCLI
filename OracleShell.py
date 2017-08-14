@@ -6,8 +6,7 @@ from prompt_toolkit.token import Token
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.styles import style_from_dict
 
-from CMDUtils import Parser, Executor
-from OracleUtils import DBInstance
+from CMDUtils import Parser
 
 
 style = style_from_dict({
@@ -24,20 +23,18 @@ def main():
     print ('Welcome.')
     mem_history = InMemoryHistory()
     parser = Parser()
-    db_connect = DBInstance(dump=True)
-    executor = Executor(db_connect)
     while True:
         input_cmd = prompt(u'>>> ', history=mem_history,
                         get_bottom_toolbar_tokens=get_bottom_toolbar_tokens,
                         auto_suggest=AutoSuggestFromHistory(),
                         style=style,
                         completer=word_completer)
-        exe_config, msg = parser.resolve(input_cmd)
-        if exe_config is not None:
-            executor.execute(exe_config)
-        else:
-            print (msg)
-            break
+        parser.resolve(input_cmd)
+        # if exe_config is not None:
+        #     executor.execute(exe_config)
+        # else:
+        #     print (msg)
+        #     break
 
 if __name__ == '__main__':
     main()

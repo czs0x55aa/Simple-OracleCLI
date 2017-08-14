@@ -3,5 +3,7 @@ simple command line interface for Oracle
 ** Work in progress! **
 
 ## Requirements
-- 1.Python 2.7
-- 2.[prompt_toolkit](https://github.com/jonathanslenders/python-prompt-toolkit)
+- Python 2.7
+- [cx_Oracle](https://oracle.github.io/python-cx_Oracle/)
+- [prompt_toolkit](https://github.com/jonathanslenders/python-prompt-toolkit)
+- [terminaltables](https://github.com/Robpol86/terminaltables)

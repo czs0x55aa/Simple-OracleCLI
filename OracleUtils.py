@@ -27,9 +27,5 @@ class DBInstance(object):
         try:
             query_res = self.cursor.execute(sql_str)
             return query_res.fetchall()
-        except Exception:
-            print Exception
-
-class DBAgent(object):
-    def __init__(self):
-        pass
+        except Exception, ex:
+            raise Exception(ex)

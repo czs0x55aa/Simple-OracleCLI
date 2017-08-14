@@ -1,8 +1,9 @@
 # coding=utf8
-from Base import CMDBase
+from BaseAgent import baseAgent
 
-class CMDcd(CMDBase):
+class cdAgent(baseAgent):
     def __init__(self, db):
+        super(cdAgent, self).__init__()
         self.db = db
         self.table = None
 

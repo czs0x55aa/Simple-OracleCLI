@@ -7,10 +7,10 @@ console = logging.StreamHandler()
 console.setFormatter(logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s"))
 logger.addHandler(console)
 
-class CMDBase(object):
-    def __init__(self, db):
-        self.db = db
-        pass
+class baseAgent(object):
+    cmd_name = None
+    def __init__(self, db=None):
+        self.cmd_name = self.__class__.__name__.replace('Agent','')
 
     def run(self, args):
         pass
@@ -20,9 +20,12 @@ class CMDBase(object):
         to_print = getattr(logging, log_type, logging.info)
         to_print(msg)
 
-    def dump(self, msg):
+    def dump_str(self, msg):
         """ output result message """
         print('[Result] %s', msg)
+
+    def dump_table(self, arr):
+        pass
 
 
 # logging.info('222')
