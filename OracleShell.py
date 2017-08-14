@@ -24,7 +24,7 @@ def main():
     parser = CLIController()
     while True:
         input_cmd = prompt(u'>>> ', history=mem_history,
-                        get_bottom_toolbar_tokens=get_bottom_toolbar_tokens,
+                        # get_bottom_toolbar_tokens=get_bottom_toolbar_tokens,
                         auto_suggest=AutoSuggestFromHistory(),
                         style=style,
                         completer=word_completer)

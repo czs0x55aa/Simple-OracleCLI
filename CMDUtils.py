@@ -2,7 +2,7 @@
 import sys, os
 from functools import wraps
 from OracleUtils import DBInstance
-
+from LogWrapper import Logging4CLI
 
 command_path = './command'
 
@@ -10,6 +10,7 @@ command_path = './command'
 class CLIController(object):
     def __init__(self):
         self.controller = CMDPacket()
+        self.logging = Logging4CLI()
 
     def resolve(self, cmd):
         cmd_spl = cmd.split()
@@ -19,7 +20,8 @@ class CLIController(object):
         if self.controller.hasCMD(cmd_name):
             self.controller.execute(cmd_spl)
         else:
-            print ('Command not exist.')
+            self.logging.error('Command not exist.')
+
 
 def singleton(cls):
     instances = {}
@@ -38,11 +40,6 @@ class CMDPacket(object):
     def __init__(self):
         self.__db = DBInstance(dump=True)
         self.__cmds = self.__loadObjects(command_path, self.__db)
-
-    def getOperat(self, cmd_name):
-        if cmd_name in self.__cmds.keys():
-            return self.__cmds[cmd_name].run
-        return None
 
     def hasCMD(self, cmd_name):
         if cmd_name in self.__cmds.keys():
@@ -77,25 +74,8 @@ class CMDPacket(object):
         # load objects
         objs = {}
         for C in clas:
-            # print C.__name__
             instant = C(self.__db)
             if hasattr(instant, 'cmd_name') and instant.cmd_name != 'base':
                 # print 'load command %s.' % instant.cmd_name
                 objs[instant.cmd_name] = instant
         return objs
-
-# import argparse
-# def testArg(astr):
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('-t')
-#     parser.add_argument('-b')
-#
-#     arg, unknown = parser.parse_known_args(astr.split())
-#     print arg.t
-#     print arg.b
-#
-#
-#
-# while True:
-#     astr = raw_input('> ')
-#     testArg(astr)

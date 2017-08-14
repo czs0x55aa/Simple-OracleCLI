@@ -12,6 +12,7 @@ class cdAgent(baseAgent):
     def parse(self, cmd_spl):
         try:
             args, unknown = self.parser.parse_known_args(cmd_spl)
+            print args
             return vars(args)
         except Exception, ex:
             self.log_error(ex)
@@ -19,7 +20,6 @@ class cdAgent(baseAgent):
     def run(self, table):
         try:
             query_res = self.db.execute_sql('select count(*) from "%s"' % (table))
-            # print 'table %s rows: %d.' % (table_name, res[0][0])
             self.dump_table([['Table', 'Rows'], [table, query_res[0][0]]])
             self.table = table
         except Exception, ex:

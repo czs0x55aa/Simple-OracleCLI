@@ -1,15 +1,8 @@
 # coding=utf8
-import argparse
 from terminaltables import AsciiTable
 
 from LogWrapper import Logging4CLI
-
-class ArgumentParserError(Exception):
-    pass
-
-class ThrowingArgumentParser(argparse.ArgumentParser):
-    def error(self, message):
-        raise ArgumentParserError(message)
+from Toolkit import ThrowingArgumentParser
 
 class baseAgent(object):
     cmd_name = None
