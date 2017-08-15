@@ -13,7 +13,7 @@ class unlimitedAgent(baseAgent):
     def run(self, sql):
         try:
             query_res = self.db.execute_sql(sql)
-            print query_res
+            print (query_res)
             self.dump_table(query_res)
         except Exception, ex:
             self.log_error(ex)
