@@ -1,15 +1,16 @@
 # coding=utf8
 import sys, os
-from functools import wraps
+
 from OracleUtils import DBInstance
 from LogWrapper import Logging4CLI
+from Toolkit import singleton
 
 command_path = './command'
 
 
 class CLIController(object):
     def __init__(self):
-        self.controller = CMDPacket()
+        self.controller = CMDManager()
         self.logging = Logging4CLI()
 
     def resolve(self, cmd):
@@ -23,26 +24,13 @@ class CLIController(object):
             self.logging.error('Command not exist.')
 
 
-def singleton(cls):
-    instances = {}
-    @wraps(cls)
-    def getinstance(*args, **kw):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kw)
-        return instances[cls]
-    return getinstance
-
-@singleton
-class CMDPacket(object):
-    __db = None
-    __cmds = None
-
+class CMDManager(object):
     def __init__(self):
-        self.__db = DBInstance(dump=True)
-        self.__cmds = self.__loadObjects(command_path, self.__db)
+        self.db = DBInstance(dump=True)
+        self.bin = BINPacket(self.db)
 
     def hasCMD(self, cmd_name):
-        if cmd_name in self.__cmds.keys():
+        if cmd_name in self.bin.get_keys():
             return True
         return False
 
@@ -50,9 +38,23 @@ class CMDPacket(object):
         """ execute command """
         cmd_name = cmd_spl[0]
         # parse command format
-        args_dict = self.__cmds[cmd_name].parse(cmd_spl[1:])
+        args_dict = self.bin[cmd_name].parse(cmd_spl[1:])
         if args_dict is not None:
-            self.__cmds[cmd_name].run(**args_dict)
+            self.bin[cmd_name].run(**args_dict)
+
+
+@singleton
+class BINPacket(object):
+    __cmds = None
+
+    def __init__(self, db=None):
+        self.__cmds = self.__loadObjects(command_path, db)
+
+    def __getitem__(self, key):
+        return self.__cmds[key]
+
+    def get_keys(self):
+        return self.__cmds.keys()
 
     def __loadObjects(self, path, db):
         sys.path.append(path)
@@ -74,7 +76,7 @@ class CMDPacket(object):
         # load objects
         objs = {}
         for C in clas:
-            instant = C(self.__db)
+            instant = C(db)
             if hasattr(instant, 'cmd_name') and instant.cmd_name != 'base':
                 # print 'load command %s.' % instant.cmd_name
                 objs[instant.cmd_name] = instant

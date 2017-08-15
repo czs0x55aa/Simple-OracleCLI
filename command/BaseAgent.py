@@ -1,6 +1,7 @@
 # coding=utf8
 from terminaltables import AsciiTable
 
+from CMDUtils import BINPacket
 from LogWrapper import Logging4CLI
 from Toolkit import ThrowingArgumentParser
 
@@ -10,6 +11,7 @@ class baseAgent(object):
         self.cmd_name = self.__class__.__name__.replace('Agent','')
         self.parser = ThrowingArgumentParser()
         self.logging = Logging4CLI()
+        # self.bin = BINPacket()
 
     def parse(self, arg_list):
         return None

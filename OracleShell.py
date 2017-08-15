@@ -8,7 +8,6 @@ from prompt_toolkit.styles import style_from_dict
 
 from CMDUtils import CLIController
 
-
 style = style_from_dict({
     Token.Toolbar: '#ffffff bg:#333333',
 })

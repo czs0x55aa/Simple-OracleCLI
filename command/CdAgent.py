@@ -5,7 +5,7 @@ class cdAgent(baseAgent):
     def __init__(self, db):
         super(cdAgent, self).__init__()
         self.db = db
-        self.table = None
+        self.table = 'user_tables'
 
         self.parser.add_argument('table', type=str, help="cd target table name.")
 
