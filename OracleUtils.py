@@ -1,5 +1,4 @@
 # coding=utf8
-import cx_Oracle
 import json
 import os
 
@@ -10,6 +9,7 @@ with open('config.json') as config_file:
 
 # default configuation
 os.environ['NLS_LANG'] = config['NLS_LANG']
+import cx_Oracle
 
 default_user = config['DataBase']['user']
 default_pass = config['DataBase']['pass']

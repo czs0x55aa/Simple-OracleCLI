@@ -1,6 +1,6 @@
 # Simple-OracleCLI
 simple command line interface for Oracle  
-** Work in progress! **
+It's failed works, mabey I will give up.
 
 ## Requirements
 - Python 2.7
